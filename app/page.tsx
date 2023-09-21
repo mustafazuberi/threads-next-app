@@ -1,6 +1,8 @@
+import { getCurrentUser } from "./api/auth/[...nextauth]/lib/session";
 import Comment from "./components/Comment";
 import CommentForm from "./components/CommentForm";
-export default function Home() {
+export default async function Home() {
+  const user = await getCurrentUser();
   const comments = [
     {
       text: "Sample Comment",
@@ -20,10 +22,17 @@ export default function Home() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       <h1 className="text-5xl text-white mb-8">Welcome to Threads App</h1>
-      <CommentForm placeholder="Write something here..." buttonText="Submit" />
+      {!!user && (
+        <section>
+          <CommentForm
+            placeholder="Write something here..."
+            buttonText="Submit"
+          />
+        </section>
+      )}
       <div className="mt-4 flex flex-col gap-y-6">
         {comments.map((comm) => {
-          return <Comment comment={comm} key={comm._id} />;
+          return <Comment comment={comm} user={user} key={comm._id} />;
         })}
       </div>
     </main>

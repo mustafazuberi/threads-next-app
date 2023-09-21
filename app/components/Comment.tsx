@@ -1,16 +1,22 @@
 "use client";
 import React, { useState } from "react";
+import { SessionUser } from "../interfaces/user.interface";
 import { Comment } from "../interfaces/comment.interface";
+import { signIn } from "next-auth/react";
 
 type Props = {
+  user: SessionUser;
   comment: Comment;
 };
 
-export default function Comment({ comment }: Props) {
+export default function Comment({ comment, user }: Props) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isReplying, setIsReplying] = useState(false);
 
   const toggleReplying = () => {
+    if (!user) {
+      return signIn();
+    }
     setIsReplying((prev) => !prev);
   };
 
@@ -24,9 +30,7 @@ export default function Comment({ comment }: Props) {
 
       <div className="sm:flex sm:justify-between sm:gap-4">
         <div className="flex items-center gap-4">
-          <h3 className="font-bold text-white">
-            {comment.user.name}
-          </h3>
+          <h3 className="font-bold text-white">{comment.user.name}</h3>
         </div>
       </div>
 
